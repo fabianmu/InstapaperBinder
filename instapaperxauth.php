@@ -4,7 +4,7 @@
  * Kin Lane - @kinlane
  *
  * PHP Library to support xAuth for Instapapers REST API.
- * 
+ *
  * This is a strip down and rework of @abraham Twitter OAuth - https://github.com/abraham/twitteroauth
  * His was just so well written, it made sense to reuse.
  * Thanks @abraham!
@@ -17,7 +17,7 @@ require_once('OAuth.php');
  * Twitter OAuth class
  */
 class InstapaperXAuth {
-	
+
   /* Contains the last HTTP status code returned. */
   public $http_code;
   /* Contains the last API call. */
@@ -27,7 +27,7 @@ class InstapaperXAuth {
   /* Set timeout default. */
   public $timeout = 30;
   /* Set connect timeout. */
-  public $connecttimeout = 30; 
+  public $connecttimeout = 30;
   /* Verify SSL Cert. */
   public $ssl_verifypeer = FALSE;
   /* Respons format. */
@@ -64,11 +64,11 @@ class InstapaperXAuth {
       $this->token = NULL;
     }
   }
-  
-  
+
+
   /**
    * Pulls list of bookmarks.
-   */  
+   */
   function getBookmarks($limit=NULL,$folder_id=NULL,$have=NULL) {
     $parameters = array();
     $parameters['limit'] = $limit;
@@ -77,23 +77,43 @@ class InstapaperXAuth {
     $request = $this->oAuthRequest($this->bookmarksList(), 'POST', $parameters);
 
     return $request;
-  } 
-  
-  
+  }
+
+
   /**
    * Pulls text for a bookmark
-   */  
+   */
   function getBookmarkText($bookmark_id) {
     $parameters = array();
     $parameters['bookmark_id'] = $bookmark_id;
     $request = $this->oAuthRequest($this->bookmarksGetText(), 'POST', $parameters);
 
     return $request;
-  }   
+  }
+
+  /**
+   * Pulls highlights for a bookmark
+   */
+  function getBookmarkHighlights($bookmark_id) {
+    $parameters = array();
+    $request = $this->oAuthRequest('https://www.instapaper.com/api/1.1/bookmarks/' . $bookmark_id . '/highlights', 'GET', $parameters);
+
+    return $request;
+  }
+
+  /**
+   * Pulls highlights for a bookmark
+   */
+  function getFolders() {
+    $parameters = array();
+    $request = $this->oAuthRequest('https://www.instapaper.com/api/1.1/folders/list', 'POST', $parameters);
+
+    return $request;
+  }
 
   /**
    * One time exchange of username and password for xauth access token and secret.
-   */  
+   */
   function getXAuthToken($username, $password) {
     $parameters = array();
     $parameters['x_auth_username'] = $username;
@@ -115,7 +135,7 @@ class InstapaperXAuth {
     }
     return $response;
   }
-  
+
   /**
    * POST wrapper for oAuthRequest.
    */
